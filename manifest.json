@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "CleanSlate",
+  "version": "1.0.0",
+  "description": "AI-powered Gmail cleanup assistant",
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "permissions": [ "sidePanel"]
+}
