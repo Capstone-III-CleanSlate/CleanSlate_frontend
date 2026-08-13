@@ -1,0 +1,210 @@
+:root {
+    font-family: Arial, Helvetica, sans-serif;
+
+    --color-background: #f6f8fc;
+    --color-surface: #ffffff;
+
+    --color-primary: #4285f4;
+    --color-primary-hover: #3367d6;
+
+    --color-google-red: #ea4335;
+    --color-google-yellow: #fbbc04;
+    --color-google-green: #34a853;
+    --color-google-blue: #4285f4;
+
+    --color-text: #202124;
+    --color-muted: #5f6368;
+    --color-border: #dadce0;
+    --color-success: #188038;
+
+    color: var(--color-text);
+    background-color: var(--color-background);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: var(--color-background);
+}
+
+/* Shared styling for the application's button classes */
+.login-btn,
+.logout-btn,
+.scan-btn,
+.summary-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+
+    font: inherit;
+    font-weight: 600;
+
+    color: white;
+    background-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.login-btn:hover,
+.logout-btn:hover,
+.scan-btn:hover,
+.summary-btn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.login-btn:focus-visible,
+.logout-btn:focus-visible,
+.scan-btn:focus-visible,
+.summary-btn:focus-visible {
+    outline: 3px solid #aecbfa;
+    outline-offset: 2px;
+}
+
+/* Main responsive side-panel container */
+.app-shell {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+
+    margin: 0 auto;
+    padding: clamp(0.75rem, 4vw, 1.5rem);
+
+    text-align: center;
+}
+
+.header {
+    margin: 0 0 0.25rem;
+
+    color: var(--color-primary);
+    font-size: clamp(1.4rem, 6vw, 1.8rem);
+}
+
+.account-status {
+    margin: 0 0 1.25rem;
+
+    color: var(--color-muted);
+    font-size: 0.85rem;
+
+    overflow-wrap: anywhere;
+}
+
+/*
+ * Defines the custom angle used by the rotating
+ * conic gradient.
+ */
+@property --glow-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.scan-card {
+    position: relative;
+    isolation: isolate;
+    z-index: 0;
+
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+    min-height: 160px;
+    padding: clamp(1rem, 5vw, 1.5rem);
+
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    box-shadow: 0 4px 12px rgb(32 33 36 / 10%);
+
+    text-align: center;
+}
+
+/* Generated layers used for the card surface and border */
+.scan-card::before,
+.scan-card::after {
+    content: "";
+    position: absolute;
+
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+/* This layer appears around the outside of the card */
+.scan-card::before {
+    inset: -2px;
+    z-index: -2;
+
+    background: var(--color-border);
+}
+
+/* This layer covers the center of the border gradient */
+.scan-card::after {
+    inset: 0;
+    z-index: -1;
+
+    background-color: var(--color-surface);
+}
+
+/* Makes each current card state fill the available width */
+.scan-card > * {
+    width: 100%;
+}
+
+/* Activates only while scanStatus is "scanning" */
+.scan-card--scanning::before {
+    background: conic-gradient(
+        from var(--glow-angle),
+        var(--color-google-blue),
+        var(--color-google-red),
+        var(--color-google-yellow),
+        var(--color-google-green),
+        var(--color-google-blue)
+    );
+
+    filter: drop-shadow(0 0 8px rgb(66 133 244 / 45%));
+    animation: rotate-glow 2.5s linear infinite;
+}
+
+@keyframes rotate-glow {
+    to {
+        --glow-angle: 360deg;
+    }
+}
+
+.scan-card p {
+    margin-top: 0;
+}
+
+.scan-btn,
+.summary-btn {
+    width: 100%;
+}
+
+.scan-complete {
+    color: var(--color-success);
+    font-weight: 700;
+}
+
+/* Keeps the colorful border but stops motion when requested */
+@media (prefers-reduced-motion: reduce) {
+    .scan-card--scanning::before {
+        animation: none;
+        filter: none;
+
+        background: conic-gradient(
+            var(--color-google-blue),
+            var(--color-google-red),
+            var(--color-google-yellow),
+            var(--color-google-green),
+            var(--color-google-blue)
+        );
+    }
+}
