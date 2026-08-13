@@ -16,8 +16,8 @@ function handleClick() {
 function App() {
   const [user, setUser] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  
-  
+
+
   async function handleLogout() {
     try {
       const response = await fetch(`${apiUrl}/api/auth/logout`, {
@@ -77,23 +77,37 @@ function App() {
 
   return (
     <div className="app-shell">
-      <h1 className="header">CleanSlate</h1>
+      <nav className="navbar" aria-label="CleanSlate navigation">
+        <span className="navbar-brand">CleanSlate</span>
+      </nav>
 
-      <div className="account-bar">
-        <p className="account-status">
-          Signed in to {user.email}
+      <main className="main-content">
+        <p className="eyebrow">AI-powered Gmail cleanup</p>
+
+        <p className="description">
+          CleanSlate is a 3-part Chrome extension that scans your inbox,
+          classifies all of your emails into helpful, user-friendly folders,
+          making it simple to declutter a crowded dashboard. 
+          The extension uses Google, Google Gemini, and
+          human-written code to make your life a little easier.
         </p>
 
-        <button
-          type="button"
-          className="logout-btn"
-          onClick={handleLogout}
-        >
-          Log out
-        </button>
-      </div>
+        <ScanCard />
 
-      <ScanCard />
+        <div className="account-actions">
+          <p className="account-status">
+            Signed in to {user.email}
+          </p>
+
+          <button
+            type="button"
+            className="logout-btn"
+            onClick={handleLogout}
+          >
+            Log out
+          </button>
+        </div>
+      </main>
     </div>
   );
 }
