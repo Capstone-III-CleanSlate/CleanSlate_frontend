@@ -1,23 +1,69 @@
+import { useEffect, useState } from "react"
 
-let login_url = "http:localhost:3000"
 
-async function handle_click(){
-  let clicked = await fetch(`${login_url}/api/auth`)
+const apiUrl = import.meta.env.VITE_API_URL;
+let loginUrl = `${apiUrl}/api/auth/google`;
 
-  return
+//navigates the browser to Google
+function handleClick() {
+  window.location.href = loginUrl;
 }
 
 
 
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  function handleScan() {
+    console.log("Scan button clicked");
+  }
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const response = await fetch(`${apiUrl}/api/auth/me`, {
+          credentials: "include",
+        })
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.error("could not check authentication:", error);
+      } finally {
+        setIsCheckingAuth(false)
+      }
+    }
+
+    checkAuth();
+  }, []);
+
+  if (isCheckingAuth) {
+    return <p>Checking connection...</p>
+  }
+
+  if (!user) {
+    return (
+      <div style={{padding: "1rem", width: "200px"}}>
+        <h1>CleanSlate</h1>
+        <button onClick={handleClick}>Login with Google</button>
+      </div>
+    )
+  }
   return (
-    <div style={{ padding: '1rem', width: '200px' }}>
-      <h1 className="title">cleanslate</h1>
-      <p className="lead_instruct">click the button to login</p>
-      <button className="button" onClick={handle_click}>login with google</button>
+    <div style={{ padding: "1rem", width: "200px" }}>
+      <h1 className="header">CleanSlate</h1>
+
+      <p>Connected as {user.email}</p>
+
+      <button className="scan-btn" onClick={handleScan}>
+        Scan my inbox
+      </button>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
