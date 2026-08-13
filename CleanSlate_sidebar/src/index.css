@@ -220,3 +220,124 @@ body {
     color: white;
     background-color: var(--color-primary);
 }
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding: 0.25rem 0 0.9rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.navbar-brand {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.nav-btn {
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    color: var(--color-text);
+    background: transparent;
+    font-size: 0.78rem;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding: 0.25rem 0 0.9rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.navbar-brand {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.nav-btn {
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    color: var(--color-text);
+    background: transparent;
+    font-size: 0.78rem;
+}
+
+.nav-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgb(138 180 248 / 10%);
+}
+
+.hero-intro {
+    margin: 1.75rem auto 1.5rem;
+    max-width: 440px;
+}
+
+.eyebrow {
+    margin: 0 0 0.65rem;
+
+    color: var(--color-primary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.hero-title {
+    margin: 0 0 1rem;
+
+    color: var(--color-text);
+    font-size: clamp(1.7rem, 7vw, 2.25rem);
+    line-height: 1.12;
+}
+
+.description {
+    max-width: 42ch;
+    margin: 0 auto;
+
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    line-height: 1.55;
+}
+
+.scan-card {
+    max-width: 380px;
+    min-height: 125px;
+}
+
+.scan-card::before {
+    inset: -1px;
+}
+
+.scan-card--scanning::before {
+    inset: -3px;
+}
+
+.account-actions {
+    margin-top: 1.5rem;
+}
+
+.logout-btn {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--color-border);
+
+    color: var(--color-muted);
+    background: transparent;
+}
+
+.logout-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgb(138 180 248 / 10%);
+}
