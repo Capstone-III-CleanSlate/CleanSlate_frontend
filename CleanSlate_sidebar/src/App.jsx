@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
-import ScanCard from "./components/ScanCard";
-
+import { useEffect, useState } from "react";
+import ScanFlow from "./components/ScanFlow";
+import Navbar from "./components/Navbar"
+import HeroIntro from "./components/HeroIntro";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const loginUrl = `${apiUrl}/api/auth/google`;
@@ -62,37 +63,29 @@ function App() {
   if (!user) {
     return (
       <div className="app-shell">
-        <h1>CleanSlate</h1>
+        <Navbar isAuthenticated={false} />
 
-        <button
-          type="button"
-          className="login-btn"
-          onClick={handleClick}
-        >
-          Login with Google
-        </button>
+        <main className="main-content">
+          <HeroIntro />
+
+          <button
+            type="button"
+            className="login-btn"
+            onClick={handleClick}
+          >
+            Login with Google
+          </button>
+        </main>
       </div>
     );
   }
 
   return (
     <div className="app-shell">
-      <nav className="navbar" aria-label="CleanSlate navigation">
-        <span className="navbar-brand">CleanSlate</span>
-      </nav>
+      <Navbar isAuthenticated={true} />
 
       <main className="main-content">
-        <p className="eyebrow">AI-powered Gmail cleanup</p>
-
-        <p className="description">
-          CleanSlate is a 3-part Chrome extension that scans your inbox,
-          classifies all of your emails into helpful, user-friendly folders,
-          making it simple to declutter a crowded dashboard. 
-          The extension uses Google, Google Gemini, and
-          human-written code to make your life a little easier.
-        </p>
-
-        <ScanCard />
+        <ScanFlow />
 
         <div className="account-actions">
           <p className="account-status">
