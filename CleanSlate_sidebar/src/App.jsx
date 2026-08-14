@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ScanCard from "./components/ScanCard";
+import ScanFlow from "./components/ScanFlow";
 import Navbar from "./components/Navbar"
 import HeroIntro from "./components/HeroIntro";
 
@@ -63,25 +63,29 @@ function App() {
   if (!user) {
     return (
       <div className="app-shell">
-        <h1>CleanSlate</h1>
+        <Navbar isAuthenticated={false} />
 
-        <button
-          type="button"
-          className="login-btn"
-          onClick={handleClick}
-        >
-          Login with Google
-        </button>
+        <main className="main-content">
+          <HeroIntro />
+
+          <button
+            type="button"
+            className="login-btn"
+            onClick={handleClick}
+          >
+            Login with Google
+          </button>
+        </main>
       </div>
     );
   }
 
   return (
     <div className="app-shell">
-      <Navbar />
+      <Navbar isAuthenticated={true} />
+
       <main className="main-content">
-        <HeroIntro />
-        <ScanCard />
+        <ScanFlow />
 
         <div className="account-actions">
           <p className="account-status">

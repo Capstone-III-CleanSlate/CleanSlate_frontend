@@ -279,9 +279,28 @@ body {
     background: rgb(138 180 248 / 10%);
 }
 
-.hero-intro {
-    margin: 1.75rem auto 1.5rem;
+.hero-stage {
+    display: grid;
     max-width: 440px;
+    margin: 1.75rem auto 1.5rem;
+}
+
+.hero-intro {
+    grid-area: 1 / 1;
+
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+
+    transition:
+        opacity 400ms ease,
+        transform 400ms ease;
+}
+
+.hero-intro--active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .eyebrow {
@@ -340,4 +359,28 @@ body {
     border-color: var(--color-primary);
     color: var(--color-primary);
     background: rgb(138 180 248 / 10%);
+}
+
+
+.scan-card>* {
+    animation: content-fade-in 400ms ease-out;
+}
+
+@keyframes content-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-intro {
+        transition: none;
+        transform: none;
+    }
 }
