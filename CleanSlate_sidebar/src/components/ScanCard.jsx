@@ -1,9 +1,10 @@
-function ScanCard({ scanStatus, onScan }) {
+import "../styles/ScanCard.css";
+
+function ScanCard({ scanStatus, onScan, onShowSummary }) {
   return (
     <section
-      className={`scan-card ${
-        scanStatus === "scanning" ? "scan-card--scanning" : ""
-      }`}
+      className={`scan-card ${scanStatus === "scanning" ? "scan-card--scanning" : ""
+        }`}
     >
       {scanStatus === "idle" && (
         <button
@@ -26,7 +27,11 @@ function ScanCard({ scanStatus, onScan }) {
           <p className="scan-complete">Scan complete</p>
           <p>25 emails scanned</p>
 
-          <button type="button" className="summary-btn">
+          <button
+            type="button"
+            className="summary-btn"
+            onClick={onShowSummary}
+          >
             Show scan summary
           </button>
         </div>

@@ -54,6 +54,13 @@ body {
     cursor: pointer;
 }
 
+.login-btn {
+    display: block;
+    width: 90%;
+    max-width: 380px;
+    margin-inline: auto;
+}
+
 .login-btn:hover,
 .logout-btn:hover,
 .scan-btn:hover,
@@ -89,7 +96,7 @@ body {
 }
 
 .account-actions {
-    margin-top: 2rem;
+    margin-top: 1rem;
     text-align: center;
 }
 
@@ -100,117 +107,8 @@ body {
     overflow-wrap: anywhere;
 }
 
-/*
- * Defines the custom angle used by the rotating
- * conic gradient.
- */
-@property --glow-angle {
-    syntax: "<angle>";
-    initial-value: 0deg;
-    inherits: false;
-}
-
-.scan-card {
-    position: relative;
-    isolation: isolate;
-    z-index: 0;
-
-    display: grid;
-    place-items: center;
-
-    width: 90%;
-    min-height: 130px;
-    padding: clamp(0.75rem, 4vw, 1.1rem);
-
-    border: none;
-    border-radius: 12px;
-    background: transparent;
-    box-shadow: 0 4px 14px rgb(0 0 0 / 35%);
-
-    text-align: center;
-}
-
-/* Generated layers used for the card surface and border */
-.scan-card::before,
-.scan-card::after {
-    content: "";
-    position: absolute;
-
-    border-radius: inherit;
-    pointer-events: none;
-}
-
-/* This layer appears around the outside of the card */
-.scan-card::before {
-    inset: -3px;
-    z-index: -2;
-    background: var(--color-border);
-}
-
-/* This layer covers the center of the border gradient */
-.scan-card::after {
-    inset: 0;
-    z-index: -1;
-
-    background-color: var(--color-surface);
-}
-
-/* Makes each current card state fill the available width */
-.scan-card>* {
-    width: 100%;
-}
-
-/* Activates only while scanStatus is "scanning" */
-.scan-card--scanning::before {
-    background: conic-gradient(from var(--glow-angle),
-            var(--color-glow-blue),
-            var(--color-glow-red),
-            var(--color-glow-yellow),
-            var(--color-glow-green),
-            var(--color-glow-blue));
-
-    filter:
-        saturate(1.3) brightness(1.2) drop-shadow(0 0 5px rgb(255 255 255 / 25%)) drop-shadow(0 0 12px rgb(66 133 244 / 75%));
-
-    animation: rotate-glow 2s linear infinite;
-}
-
-@keyframes rotate-glow {
-    to {
-        --glow-angle: 360deg;
-    }
-}
-
-.scan-card p {
-    margin-top: 0;
-}
-
-.scan-btn,
-.summary-btn {
-    width: 100%;
-}
-
-.scan-complete {
-    color: var(--color-success);
-    font-weight: 700;
-}
-
-/* Keeps the colorful border but stops motion when requested */
-@media (prefers-reduced-motion: reduce) {
-    .scan-card--scanning::before {
-        animation: none;
-        filter: none;
-
-        background: conic-gradient(var(--color-google-blue),
-                var(--color-google-red),
-                var(--color-google-yellow),
-                var(--color-google-green),
-                var(--color-google-blue));
-    }
-}
-
 .logout-btn {
-    margin-top: 1.25rem;
+    margin-top: .5rem;
     border: 1px solid var(--color-border);
     color: var(--color-muted);
     background-color: var(--color-surface);
@@ -283,6 +181,7 @@ body {
     display: grid;
     max-width: 440px;
     margin: 1.75rem auto 1.5rem;
+    position: relative;
 }
 
 .hero-intro {
@@ -301,6 +200,12 @@ body {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+}
+
+.hero-intro:not(.hero-intro--active) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
 }
 
 .eyebrow {
@@ -330,19 +235,6 @@ body {
     line-height: 1.55;
 }
 
-.scan-card {
-    max-width: 380px;
-    min-height: 125px;
-}
-
-.scan-card::before {
-    inset: -1px;
-}
-
-.scan-card--scanning::before {
-    inset: -3px;
-}
-
 .account-actions {
     margin-top: 1.5rem;
 }
@@ -361,22 +253,6 @@ body {
     background: rgb(138 180 248 / 10%);
 }
 
-
-.scan-card>* {
-    animation: content-fade-in 400ms ease-out;
-}
-
-@keyframes content-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 @media (prefers-reduced-motion: reduce) {
     .hero-intro {
