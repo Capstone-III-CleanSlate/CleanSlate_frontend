@@ -6,14 +6,24 @@ import mockScanResults from "../data/mockScanResults";
 import CategoryDetails from "./CategoryDetails";
 import { getMockEmailsByCategory } from "../data/mockClassifiedEmails";
 
+const scanStages = [
+    "Preparing your inbox...",
+    "Skipping protected senders...",
+    "Applying cleanup filters...",
+    "Classifying emails...",
+    "Building your summary...",
+];
+
 
 function ScanFlow() {
     const [scanStatus, setScanStatus] = useState("idle");
     const [currentView, setCurrentView] = useState("scanner")
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [scanStageIndex, setScanStageIndex] = useState(0);
 
     function handleScan() {
         setCurrentView("scanner");
+        setScanStageIndex(0);
         setScanStatus("scanning");
     }
     function handleShowSummary() {
@@ -42,12 +52,21 @@ function ScanFlow() {
             return;
         }
 
+        const isLastStage =
+            scanStageIndex === scanStages.length - 1;
+
         const scanTimer = setTimeout(() => {
-            setScanStatus("completed");
-        }, 3000);
+            if (isLastStage) {
+                setScanStatus("completed");
+            } else {
+                setScanStageIndex(
+                    (currentIndex) => currentIndex + 1
+                );
+            }
+        }, 2000);
 
         return () => clearTimeout(scanTimer);
-    }, [scanStatus]);
+    }, [scanStatus, scanStageIndex]);
 
     const selectedCategory = mockScanResults.categories.find(
         (category) => category.id === selectedCategoryId
@@ -64,6 +83,9 @@ function ScanFlow() {
 
                     <ScanCard
                         scanStatus={scanStatus}
+                        scanStages={scanStages}
+                        scanStageIndex={scanStageIndex}
+                        totalScanned={mockScanResults.analyzedCount}
                         onScan={handleScan}
                         onShowSummary={handleShowSummary}
                     />

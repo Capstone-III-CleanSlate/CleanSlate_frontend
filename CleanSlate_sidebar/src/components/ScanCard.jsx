@@ -1,6 +1,13 @@
 import "../styles/ScanCard.css";
 
-function ScanCard({ scanStatus, onScan, onShowSummary }) {
+function ScanCard({
+  scanStatus,
+  scanStages,
+  scanStageIndex,
+  totalScanned,
+  onScan,
+  onShowSummary
+}) {
   return (
     <section
       className={`scan-card ${scanStatus === "scanning" ? "scan-card--scanning" : ""
@@ -17,16 +24,29 @@ function ScanCard({ scanStatus, onScan, onShowSummary }) {
       )}
 
       {scanStatus === "scanning" && (
-        <div role="status" aria-live="polite">
-          <p>Scanning emails...</p>
+        <div
+          className="scan-stage"
+          role="status"
+          aria-live="polite"
+        >
+          {scanStages.map((stage, index) => (
+            <p
+              key={stage}
+              className={`scan-stage-message ${index === scanStageIndex
+                ? "scan-stage-message--active"
+                : ""
+                }`}
+              aria-hidden={index !== scanStageIndex}
+            >
+              {stage}
+            </p>
+          ))}
         </div>
       )}
-
       {scanStatus === "completed" && (
         <div role="status">
           <p className="scan-complete">Scan complete</p>
-          <p>25 emails scanned</p>
-
+          <p>{totalScanned} emails scanned</p>
           <button
             type="button"
             className="summary-btn"

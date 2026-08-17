@@ -31,18 +31,14 @@
 .scan-card--scanning {
     border-color: transparent;
     background:
-        linear-gradient(
-            var(--color-surface),
-            var(--color-surface)
-        ) padding-box,
-        conic-gradient(
-            from 45deg,
+        linear-gradient(var(--color-surface),
+            var(--color-surface)) padding-box,
+        conic-gradient(from 45deg,
             rgb(66 133 244 / 65%),
             rgb(234 67 53 / 65%),
             rgb(251 188 4 / 65%),
             rgb(52 168 83 / 65%),
-            rgb(66 133 244 / 65%)
-        ) border-box;
+            rgb(66 133 244 / 65%)) border-box;
 }
 
 /* Creates a three-pixel ring outside the card for the moving comet. */
@@ -65,32 +61,56 @@
 }
 
 .scan-card--scanning::before {
-    background: conic-gradient(
-        from var(--glow-angle),
-        transparent 0deg 300deg,
-        rgb(234 67 53 / 10%) 310deg,
-        rgb(251 188 4 / 25%) 322deg,
-        rgb(52 168 83 / 40%) 334deg,
-        rgb(66 133 244 / 70%) 346deg,
-        var(--color-primary-hover) 354deg,
-        rgb(66 133 244 / 35%) 358deg,
-        transparent 360deg
-    );
+    background: conic-gradient(from var(--glow-angle),
+            transparent 0deg 300deg,
+            rgb(234 67 53 / 10%) 310deg,
+            rgb(251 188 4 / 25%) 322deg,
+            rgb(52 168 83 / 40%) 334deg,
+            rgb(66 133 244 / 70%) 346deg,
+            var(--color-primary-hover) 354deg,
+            rgb(66 133 244 / 35%) 358deg,
+            transparent 360deg);
 
     filter:
-        drop-shadow(0 0 3px rgb(66 133 244 / 80%))
-        drop-shadow(0 0 7px rgb(66 133 244 / 40%));
+        drop-shadow(0 0 3px rgb(66 133 244 / 80%)) drop-shadow(0 0 7px rgb(66 133 244 / 40%));
 
     animation: rotate-glow 1.6s linear infinite;
 }
 
-.scan-card > * {
+.scan-card>* {
     width: 100%;
     animation: scan-content-fade-in 400ms ease-out;
 }
 
 .scan-card p {
     margin-top: 0;
+}
+
+/* Layers every scan-stage message in the same location. */
+.scan-stage {
+    display: grid;
+    place-items: center;
+    min-height: 2rem;
+}
+
+/* Messages remain layered so the old and new text can cross-fade. */
+.scan-stage-message {
+    grid-area: 1 / 1;
+    width: 100%;
+    margin: 0;
+
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+        opacity 800ms ease-in-out,
+        transform 800ms ease-in-out;
+
+    pointer-events: none;
+}
+
+.scan-stage-message--active {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .scan-btn,
@@ -122,12 +142,18 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .scan-card--scanning::before,
-    .scan-card > * {
+    .scan-card>* {
         animation: none;
     }
 
     .scan-card--scanning::before {
         filter: none;
+    }
+
+    .scan-stage-message {
+        transition: none;
+        transform: none;
     }
 }
