@@ -56,8 +56,6 @@
 }
 
 .category-card {
-    --category-color: var(--color-primary);
-
     padding: 1rem;
     border: 1px solid var(--color-border);
     border-left: 3px solid var(--category-color);
@@ -186,26 +184,6 @@
 
 .back-btn {
     margin-top: 1.25rem;
-}
-
-.category-card--educational {
-    --category-color: var(--color-glow-green);
-}
-
-.category-card--promotions {
-    --category-color: var(--color-glow-yellow);
-}
-
-.category-card--newsletters {
-    --category-color: var(--color-glow-blue);
-}
-
-.category-card--social {
-    --category-color: #d66ec2;
-}
-
-.category-card--low-priority {
-    --category-color: #9aa0a6;
 }
 
 @media (max-width: 340px) {

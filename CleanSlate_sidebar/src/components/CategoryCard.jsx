@@ -6,7 +6,7 @@ function CategoryCard({
 }) {
     return (
         <article
-            className={`category-card category-card--${category.id}`}
+            className={`category-card category-theme category-theme--${category.id}`}
         >
             <div className="category-card__heading">
                 <span className="category-card__label">

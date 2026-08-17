@@ -3,12 +3,14 @@ import HeroIntro from "./HeroIntro";
 import ScanCard from "./ScanCard";
 import ScanSummary from "./ScanSummary";
 import mockScanResults from "../data/mockScanResults";
+import CategoryDetails from "./CategoryDetails";
+import { getMockEmailsByCategory } from "../data/mockClassifiedEmails";
 
 
 function ScanFlow() {
     const [scanStatus, setScanStatus] = useState("idle");
     const [currentView, setCurrentView] = useState("scanner")
-
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
     function handleScan() {
         setCurrentView("scanner");
@@ -20,9 +22,12 @@ function ScanFlow() {
     function handleBackToScanner() {
         setCurrentView("scanner");
     }
-    //Temp until category details are added
     function handleReviewCategory(categoryId) {
-        console.log("Review category:", categoryId);
+        setSelectedCategoryId(categoryId);
+        setCurrentView("details");
+    }
+    function handleBackToSummary() {
+        setCurrentView("summary");
     }
     function handleAcceptCategory(categoryId) {
         console.log("Accept category:", categoryId);
@@ -30,6 +35,7 @@ function ScanFlow() {
     function handleTrashCategory(categoryId) {
         console.log("Trash category:", categoryId);
     }
+
 
     useEffect(() => {
         if (scanStatus !== "scanning") {
@@ -43,12 +49,28 @@ function ScanFlow() {
         return () => clearTimeout(scanTimer);
     }, [scanStatus]);
 
+    const selectedCategory = mockScanResults.categories.find(
+        (category) => category.id === selectedCategoryId
+    );
+
+    const selectedEmails =
+        getMockEmailsByCategory(selectedCategoryId)
+
     return (
         <>
             {currentView === "scanner" && (
-                <HeroIntro scanStatus={scanStatus} />
+                <>
+                    <HeroIntro scanStatus={scanStatus} />
+
+                    <ScanCard
+                        scanStatus={scanStatus}
+                        onScan={handleScan}
+                        onShowSummary={handleShowSummary}
+                    />
+                </>
             )}
-            {currentView === "summary" ? (
+
+            {currentView === "summary" && (
                 <ScanSummary
                     summary={mockScanResults}
                     onBack={handleBackToScanner}
@@ -56,11 +78,13 @@ function ScanFlow() {
                     onReviewCategory={handleReviewCategory}
                     onTrashCategory={handleTrashCategory}
                 />
-            ) : (
-                <ScanCard
-                    scanStatus={scanStatus}
-                    onScan={handleScan}
-                    onShowSummary={handleShowSummary}
+            )}
+
+            {currentView === "details" && (
+                <CategoryDetails
+                    category={selectedCategory}
+                    emails={selectedEmails}
+                    onBack={handleBackToSummary}
                 />
             )}
         </>
