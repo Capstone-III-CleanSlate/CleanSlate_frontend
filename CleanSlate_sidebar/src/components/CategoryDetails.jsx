@@ -2,6 +2,7 @@ import { useState } from "react";
 import Pagination from "./Pagination";
 import EmailListItem from "./EmailListItem";
 import "../styles/CategoryDetails.css";
+import getCategoryColor from "../utils/getCategoryColor";
 
 
 const conversationsPerPage = 20;
@@ -96,9 +97,13 @@ function CategoryDetails({
     return (
         <section
             className={`category-details category-theme category-theme--${category.id}`}
+            style={{
+                "--category-color": getCategoryColor(category.label),
+            }}
             aria-labelledby="category-details-title"
         >
             <div className="category-details__actions">
+
                 <button
                     type="button"
                     className="back-btn"
