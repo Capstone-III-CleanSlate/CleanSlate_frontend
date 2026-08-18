@@ -145,10 +145,10 @@
     background: rgb(138 180 248 / 6%);
 }
 
-/* Keeps the email dropdown and its individual trash action side by side. */
+/* Keeps the conversation checkbox and dropdown side by side. */
 .email-list__row {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: start;
     gap: 0.5rem;
 }
@@ -159,41 +159,6 @@
 
 .email-details {
     min-width: 0;
-}
-
-.email-trash-btn {
-    display: grid;
-    width: 1.9rem;
-    height: 1.9rem;
-    padding: 0;
-
-    place-items: center;
-    border: 1px solid rgb(242 139 130 / 45%);
-    border-radius: 6px;
-
-    color: var(--color-glow-red);
-    background: transparent;
-    cursor: pointer;
-}
-
-.email-trash-btn svg {
-    width: 1rem;
-    height: 1rem;
-    fill: none;
-    stroke: currentcolor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.8;
-}
-
-.email-trash-btn:hover {
-    color: #202124;
-    background: var(--color-glow-red);
-}
-
-.email-trash-btn:focus-visible {
-    outline: 2px solid var(--color-glow-red);
-    outline-offset: 2px;
 }
 
 .email-list__heading {
