@@ -1,3 +1,5 @@
+import getCategoryColor from "../utils/getCategoryColor";
+
 function CategoryCard({
     category,
     onAccept,
@@ -7,6 +9,9 @@ function CategoryCard({
     return (
         <article
             className={`category-card category-theme category-theme--${category.id}`}
+            style={{
+                "--category-color": getCategoryColor(category.label),
+            }}
         >
             <div className="category-card__heading">
                 <span className="category-card__label">
