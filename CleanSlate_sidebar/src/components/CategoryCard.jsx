@@ -14,7 +14,12 @@ function CategoryCard({
                 </span>
 
                 <span className="category-card__count">
-                    <strong>{category.count}</strong> emails
+                    <strong>{category.emailCount}</strong> emails
+                    {" · "}
+                    {category.conversationCount}{" "}
+                    {category.conversationCount === 1
+                        ? "conversation"
+                        : "conversations"}
                 </span>
             </div>
 

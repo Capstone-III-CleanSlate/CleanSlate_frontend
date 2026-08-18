@@ -5,7 +5,12 @@ function formatEmailDate(receivedAt) {
     }).format(new Date(receivedAt));
 }
 
-function EmailListItem({ email, isSelected, onToggleSelected, onTrash }) {
+function EmailListItem({
+    conversation,
+    isSelected,
+    onToggleSelected,
+    onTrash,
+}) {
     return (
         <li className="email-list__item">
             <div className="email-list__row">
@@ -13,8 +18,8 @@ function EmailListItem({ email, isSelected, onToggleSelected, onTrash }) {
                     type="checkbox"
                     className="email-select-checkbox"
                     checked={isSelected}
-                    onChange={() => onToggleSelected(email.id)}
-                    aria-label={`Select ${email.subject || "email"}`}
+                    onChange={() => onToggleSelected(conversation.id)}
+                    aria-label={`Select ${conversation.subject || "conversation"}`}
                 />
 
                 <details
@@ -23,28 +28,35 @@ function EmailListItem({ email, isSelected, onToggleSelected, onTrash }) {
                 >
                     <summary className="email-details__summary">
                         <span className="email-list__heading">
-                            <strong>{email.senderName}</strong>
+                            <strong>{conversation.senderName}</strong>
 
-                            <time dateTime={email.receivedAt}>
-                                {formatEmailDate(email.receivedAt)}
+                            <time dateTime={conversation.receivedAt}>
+                                {formatEmailDate(conversation.receivedAt)}
                             </time>
                         </span>
 
                         <span className="email-list__subject">
-                            {email.subject || "(No subject)"}
+                            {conversation.subject || "(No subject)"}
+                        </span>
+
+                        <span className="conversation-message-count">
+                            {conversation.messageCount}{" "}
+                            {conversation.messageCount === 1
+                                ? "message"
+                                : "messages"}
                         </span>
                     </summary>
                     <p className="email-list__snippet">
-                        {email.snippet || "No message preview available."}
+                        {conversation.snippet || "No message preview available."}
                     </p>
                 </details>
 
                 <button
                     type="button"
                     className="email-trash-btn"
-                    aria-label={`Move ${email.subject || "email"} to trash`}
+                    aria-label={`Move ${conversation.subject || "conversation"} to trash`}
                     title="Move to trash"
-                    onClick={() => onTrash?.(email.id)}
+                    onClick={() => onTrash?.(conversation.id)}
                 >
                     <svg
                         viewBox="0 0 24 24"

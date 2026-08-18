@@ -4,79 +4,92 @@ import EmailListItem from "./EmailListItem";
 import "../styles/CategoryDetails.css";
 
 
-const emailsPerPage = 20;
+const conversationsPerPage = 20;
 
 
 
 function CategoryDetails({
     category,
-    emails,
+    conversations,
     onBack,
 }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedEmailIds, setSelectedEmailIds] = useState(new Set());
+    const [selectedConversationIds, setSelectedConversationIds] = useState(new Set());
 
     if (!category) {
         return null;
     }
 
-    const totalPages = Math.ceil(emails.length / emailsPerPage);
-
-    const firstEmailIndex =
-        (currentPage - 1) * emailsPerPage;
-
-    const lastEmailIndex =
-        firstEmailIndex + emailsPerPage;
-
-    const visibleEmails = emails.slice(
-        firstEmailIndex,
-        lastEmailIndex
+    const totalPages = Math.ceil(
+        conversations.length / conversationsPerPage
     );
 
-    const firstDisplayedEmail =
-        emails.length === 0 ? 0 : firstEmailIndex + 1;
+    const firstConversationIndex =
+        (currentPage - 1) * conversationsPerPage;
 
-    const lastDisplayedEmail = Math.min(lastEmailIndex, emails.length);
+    const lastConversationIndex =
+        firstConversationIndex + conversationsPerPage;
+
+    const visibleConversations = conversations.slice(
+        firstConversationIndex,
+        lastConversationIndex
+    );
+
+    const firstDisplayedConversation =
+        conversations.length === 0
+            ? 0
+            : firstConversationIndex + 1;
+
+    const lastDisplayedConversation = Math.min(
+        lastConversationIndex,
+        conversations.length
+    );
 
 
-    function handleToggleEmail(emailId) {
-        setSelectedEmailIds((currentIds) => {
+    function handleToggleConversation(conversationId) {
+        setSelectedConversationIds((currentIds) => {
             const updatedIds = new Set(currentIds);
 
-            if (updatedIds.has(emailId)) {
-                updatedIds.delete(emailId);
+            if (updatedIds.has(conversationId)) {
+                updatedIds.delete(conversationId);
             } else {
-                updatedIds.add(emailId);
+                updatedIds.add(conversationId);
             }
 
             return updatedIds;
         });
     }
-    const allEmailsSelected =
-        emails.length > 0 &&
-        emails.every((email) => selectedEmailIds.has(email.id));
+    const allConversationsSelected =
+        conversations.length > 0 &&
+        conversations.every((conversation) =>
+            selectedConversationIds.has(conversation.id)
+        );
 
     function handleSelectAll() {
-        if (allEmailsSelected) {
-            setSelectedEmailIds(new Set());
+        if (allConversationsSelected) {
+            setSelectedConversationIds(new Set());
         } else {
-            setSelectedEmailIds(
-                new Set(emails.map((email) => email.id))
+            setSelectedConversationIds(
+                new Set(
+                    conversations.map(
+                        (conversation) => conversation.id
+                    )
+                )
             );
         }
     }
     function handleAcceptSelected() {
-        const selectedIds = Array.from(selectedEmailIds);
+        const selectedIds = Array.from(selectedConversationIds);
 
-        console.log("Accept selected emails:", selectedIds);
-        setSelectedEmailIds(new Set());
+        console.log("Accept selected conversations:", selectedIds);
+        setSelectedConversationIds(new Set());
     }
 
     function handleTrashSelected() {
-        const selectedIds = Array.from(selectedEmailIds);
+        const selectedIds = Array.from(selectedConversationIds);
 
-        console.log("Trash selected emails:", selectedIds);
-        setSelectedEmailIds(new Set());
+        console.log("Trash selected conversations:", selectedIds);
+        setSelectedConversationIds(new Set());
     }
 
 
@@ -98,7 +111,7 @@ function CategoryDetails({
                     <button
                         type="button"
                         className="accept-selected-btn"
-                        disabled={selectedEmailIds.size === 0}
+                        disabled={selectedConversationIds.size === 0}
                         onClick={handleAcceptSelected}
                     >
                         Accept
@@ -107,7 +120,7 @@ function CategoryDetails({
                     <button
                         type="button"
                         className="trash-selected-btn"
-                        disabled={selectedEmailIds.size === 0}
+                        disabled={selectedConversationIds.size === 0}
                         onClick={handleTrashSelected}
                     >
                         Trash
@@ -121,9 +134,19 @@ function CategoryDetails({
                 </h2>
 
                 <strong>
-                    Showing {firstDisplayedEmail}-{lastDisplayedEmail} of{" "}
-                    {emails.length} emails
+                    Showing {firstDisplayedConversation}-
+                    {lastDisplayedConversation} of{" "}
+                    {conversations.length}{" "}
+                    {conversations.length === 1
+                        ? "conversation"
+                        : "conversations"}
                 </strong>
+
+                <p className="category-details__email-total">
+                    {category.emailCount}{" "}
+                    {category.emailCount === 1 ? "email" : "emails"}
+                    {" "}in this category
+                </p>
             </header>
 
 
@@ -131,13 +154,19 @@ function CategoryDetails({
                 <label>
                     <input
                         type="checkbox"
-                        checked={allEmailsSelected}
+                        checked={allConversationsSelected}
                         onChange={handleSelectAll}
                     />
-                    Select all
+                    Select all conversations
                 </label>
 
-                <span>{selectedEmailIds.size} selected</span>
+                <span>
+                    {selectedConversationIds.size}{" "}
+                    {selectedConversationIds.size === 1
+                        ? "conversation"
+                        : "conversations"}{" "}
+                    selected
+                </span>
             </div>
             <Pagination
                 currentPage={currentPage}
@@ -145,12 +174,14 @@ function CategoryDetails({
                 onPageChange={setCurrentPage}
             />
             <ul className="email-list">
-                {visibleEmails.map((email) => (
+                {visibleConversations.map((conversation) => (
                     <EmailListItem
-                        key={email.id}
-                        email={email}
-                        isSelected={selectedEmailIds.has(email.id)}
-                        onToggleSelected={handleToggleEmail}
+                        key={conversation.id}
+                        conversation={conversation}
+                        isSelected={selectedConversationIds.has(
+                            conversation.id
+                        )}
+                        onToggleSelected={handleToggleConversation}
                     />
                 ))}
             </ul>

@@ -19,7 +19,11 @@ function ScanSummary({
         </span>
 
         <h2 id="scan-summary-title">
-          <strong>{summary.analyzedCount}</strong> emails scanned
+          <strong>{summary.emailCount}</strong> emails scanned across{" "}
+          {summary.conversationCount}{" "}
+          {summary.conversationCount === 1
+            ? "conversation"
+            : "conversations"}
         </h2>
 
         <p>

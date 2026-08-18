@@ -5,6 +5,7 @@ function ScanCard({
   scanStages,
   scanStageIndex,
   totalScanned,
+  totalConversations,
   onScan,
   onShowSummary
 }) {
@@ -46,7 +47,13 @@ function ScanCard({
       {scanStatus === "completed" && (
         <div role="status">
           <p className="scan-complete">Scan complete</p>
-          <p>{totalScanned} emails scanned</p>
+          <p>
+            {totalScanned} emails scanned across{" "}
+            {totalConversations}{" "}
+            {totalConversations === 1
+              ? "conversation"
+              : "conversations"}
+          </p>
           <button
             type="button"
             className="summary-btn"

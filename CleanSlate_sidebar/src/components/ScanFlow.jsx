@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import HeroIntro from "./HeroIntro";
 import ScanCard from "./ScanCard";
 import ScanSummary from "./ScanSummary";
-import mockScanResults from "../data/mockScanResults";
+import normalizeScanResponse from "../services/normalizeScanResponse";
+import sampleBackendScanResponse from "../data/sampleBackendScanResponse";
 import CategoryDetails from "./CategoryDetails";
-import { getMockEmailsByCategory } from "../data/mockClassifiedEmails";
 
 const scanStages = [
     "Preparing your inbox...",
@@ -13,7 +13,9 @@ const scanStages = [
     "Classifying emails...",
     "Building your summary...",
 ];
-
+const scanResults = normalizeScanResponse(
+    sampleBackendScanResponse
+);
 
 function ScanFlow() {
     const [scanStatus, setScanStatus] = useState("idle");
@@ -68,12 +70,12 @@ function ScanFlow() {
         return () => clearTimeout(scanTimer);
     }, [scanStatus, scanStageIndex]);
 
-    const selectedCategory = mockScanResults.categories.find(
+    const selectedCategory = scanResults.categories.find(
         (category) => category.id === selectedCategoryId
     );
 
-    const selectedEmails =
-        getMockEmailsByCategory(selectedCategoryId)
+    const selectedConversations =
+        selectedCategory?.conversations ?? [];
 
     return (
         <>
@@ -85,7 +87,8 @@ function ScanFlow() {
                         scanStatus={scanStatus}
                         scanStages={scanStages}
                         scanStageIndex={scanStageIndex}
-                        totalScanned={mockScanResults.analyzedCount}
+                        totalScanned={scanResults.emailCount}
+                        totalConversations={scanResults.conversationCount}
                         onScan={handleScan}
                         onShowSummary={handleShowSummary}
                     />
@@ -94,7 +97,7 @@ function ScanFlow() {
 
             {currentView === "summary" && (
                 <ScanSummary
-                    summary={mockScanResults}
+                    summary={scanResults}
                     onBack={handleBackToScanner}
                     onAcceptCategory={handleAcceptCategory}
                     onReviewCategory={handleReviewCategory}
@@ -105,7 +108,7 @@ function ScanFlow() {
             {currentView === "details" && (
                 <CategoryDetails
                     category={selectedCategory}
-                    emails={selectedEmails}
+                    conversations={selectedConversations}
                     onBack={handleBackToSummary}
                 />
             )}
