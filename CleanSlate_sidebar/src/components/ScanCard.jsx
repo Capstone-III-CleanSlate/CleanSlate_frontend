@@ -6,6 +6,7 @@ function ScanCard({
   scanStageIndex,
   totalScanned,
   totalConversations,
+  scanError,
   onScan,
   onShowSummary
 }) {
@@ -42,6 +43,20 @@ function ScanCard({
               {stage}
             </p>
           ))}
+        </div>
+      )}
+      {scanStatus === "error" && (
+        <div role="alert">
+          <p className="scan-error">
+            {scanError || "Could not scan the inbox."}
+          </p>
+          <button
+            type="button"
+            className="scan-btn"
+            onClick={onScan}
+          >
+            Try again
+          </button>
         </div>
       )}
       {scanStatus === "completed" && (
