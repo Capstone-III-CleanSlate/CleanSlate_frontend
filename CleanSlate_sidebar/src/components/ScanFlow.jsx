@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import HeroIntro from "./HeroIntro";
 import ScanCard from "./ScanCard";
 import ScanSummary from "./ScanSummary";
-import normalizeScanResponse from "../services/normalizeScanResponse";
-import sampleBackendScanResponse from "../data/sampleBackendScanResponse";
+import scanInbox from "../services/scanInbox";
 import CategoryDetails from "./CategoryDetails";
 
 const scanStages = [
@@ -13,20 +12,36 @@ const scanStages = [
     "Classifying emails...",
     "Building your summary...",
 ];
-const scanResults = normalizeScanResponse(
-    sampleBackendScanResponse
-);
-
 function ScanFlow() {
     const [scanStatus, setScanStatus] = useState("idle");
     const [currentView, setCurrentView] = useState("scanner")
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const [scanStageIndex, setScanStageIndex] = useState(0);
+    const [scanResults, setScanResults] = useState(null);
+    const [scanError, setScanError] = useState("");
 
-    function handleScan() {
+    async function handleScan() {
         setCurrentView("scanner");
+        setSelectedCategoryId(null);
         setScanStageIndex(0);
+        setScanResults(null);
+        setScanError("");
         setScanStatus("scanning");
+
+        try {
+            const nextScanResults = await scanInbox();
+
+            setScanResults(nextScanResults);
+            setScanStatus("completed");
+        } catch (error) {
+            console.error("Could not scan inbox:", error);
+            setScanError(
+                error instanceof Error
+                    ? error.message
+                    : "Could not scan the inbox."
+            );
+            setScanStatus("error");
+        }
     }
     function handleShowSummary() {
         setCurrentView("summary");
@@ -50,27 +65,23 @@ function ScanFlow() {
 
 
     useEffect(() => {
-        if (scanStatus !== "scanning") {
+        if (
+            scanStatus !== "scanning" ||
+            scanStageIndex === scanStages.length - 1
+        ) {
             return;
         }
 
-        const isLastStage =
-            scanStageIndex === scanStages.length - 1;
-
         const scanTimer = setTimeout(() => {
-            if (isLastStage) {
-                setScanStatus("completed");
-            } else {
-                setScanStageIndex(
-                    (currentIndex) => currentIndex + 1
-                );
-            }
+            setScanStageIndex(
+                (currentIndex) => currentIndex + 1
+            );
         }, 2000);
 
         return () => clearTimeout(scanTimer);
     }, [scanStatus, scanStageIndex]);
 
-    const selectedCategory = scanResults.categories.find(
+    const selectedCategory = scanResults?.categories.find(
         (category) => category.id === selectedCategoryId
     );
 
@@ -87,8 +98,9 @@ function ScanFlow() {
                         scanStatus={scanStatus}
                         scanStages={scanStages}
                         scanStageIndex={scanStageIndex}
-                        totalScanned={scanResults.emailCount}
-                        totalConversations={scanResults.conversationCount}
+                        totalScanned={scanResults?.emailCount ?? 0}
+                        totalConversations={scanResults?.conversationCount ?? 0}
+                        scanError={scanError}
                         onScan={handleScan}
                         onShowSummary={handleShowSummary}
                     />

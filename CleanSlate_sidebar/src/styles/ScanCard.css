@@ -123,6 +123,11 @@
     font-weight: 700;
 }
 
+.scan-error {
+    color: var(--color-glow-red);
+    font-weight: 700;
+}
+
 @keyframes rotate-glow {
     to {
         --glow-angle: 360deg;
