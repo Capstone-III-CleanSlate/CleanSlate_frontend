@@ -13,9 +13,12 @@ function CategoryDetails({
     category,
     conversations,
     onBack,
+    onSelectedAction,
 }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedConversationIds, setSelectedConversationIds] = useState(new Set());
+    const [pendingAction, setPendingAction] = useState(null);
+    const [actionError, setActionError] = useState("");
 
     if (!category) {
         return null;
@@ -79,24 +82,26 @@ function CategoryDetails({
             );
         }
     }
-    function handleAcceptSelected() {
+    async function handleSelectedAction(action) {
         const selectedIds = Array.from(selectedConversationIds);
 
-        console.log("Accept selected conversations:", selectedIds);
-        setSelectedConversationIds(new Set());
-    }
-    function handleKeepSelected() {
-        const selectedIds = Array.from(selectedConversationIds);
+        setPendingAction(action);
+        setActionError("");
 
-        console.log("Keep selected conversations:", selectedIds);
-        setSelectedConversationIds(new Set());
-    }
-
-    function handleTrashSelected() {
-        const selectedIds = Array.from(selectedConversationIds);
-
-        console.log("Trash selected conversations:", selectedIds);
-        setSelectedConversationIds(new Set());
+        try {
+            await onSelectedAction(action, selectedIds);
+            setSelectedConversationIds(new Set());
+            setCurrentPage(1);
+        } catch (error) {
+            console.error(`Could not ${action} selected conversations:`, error);
+            setActionError(
+                error instanceof Error
+                    ? error.message
+                    : "Could not update the selected conversations."
+            );
+        } finally {
+            setPendingAction(null);
+        }
     }
 
 
@@ -122,29 +127,44 @@ function CategoryDetails({
                     <button
                         type="button"
                         className="accept-selected-btn"
-                        disabled={selectedConversationIds.size === 0}
-                        onClick={handleAcceptSelected}
+                        disabled={
+                            selectedConversationIds.size === 0 ||
+                            pendingAction !== null
+                        }
+                        onClick={() => handleSelectedAction("accept")}
                     >
-                        Accept
+                        {pendingAction === "accept" ? "Accepting..." : "Accept"}
                     </button>
                     <button
                         type="button"
                         className="keep-selected-btn"
-                        disabled={selectedConversationIds.size === 0}
-                        onClick={handleKeepSelected}
+                        disabled={
+                            selectedConversationIds.size === 0 ||
+                            pendingAction !== null
+                        }
+                        onClick={() => handleSelectedAction("keep")}
                     >
-                        Keep in inbox
+                        {pendingAction === "keep" ? "Keeping..." : "Keep in inbox"}
                     </button>
                     <button
                         type="button"
                         className="trash-selected-btn"
-                        disabled={selectedConversationIds.size === 0}
-                        onClick={handleTrashSelected}
+                        disabled={
+                            selectedConversationIds.size === 0 ||
+                            pendingAction !== null
+                        }
+                        onClick={() => handleSelectedAction("trash")}
                     >
-                        Trash
+                        {pendingAction === "trash" ? "Moving..." : "Trash"}
                     </button>
                 </div>
             </div>
+
+            {actionError && (
+                <p className="action-error" role="alert">
+                    {actionError}
+                </p>
+            )}
 
             <header className="category-details__header">
                 <h2 id="category-details-title">

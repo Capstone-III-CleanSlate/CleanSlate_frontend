@@ -65,6 +65,8 @@ function App() {
   }
 
   useEffect(() => {
+    // Auth state is updated after asynchronous extension storage and API checks.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     checkAuth();
 
     function handleVisibilityChange() {

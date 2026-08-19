@@ -4,7 +4,13 @@ import ScanCard from "./ScanCard";
 import ScanSummary from "./ScanSummary";
 import scanInbox from "../services/scanInbox";
 import CategoryDetails from "./CategoryDetails";
-import { acceptCategory, trashCategory } from "../services/categoryActions";
+import {
+    acceptCategory,
+    trashCategory,
+    acceptSelectedConversations,
+    keepSelectedConversations,
+    trashSelectedConversations,
+} from "../services/categoryActions";
 
 
 const scanStages = [
@@ -159,6 +165,92 @@ function ScanFlow() {
         }
     }
 
+    async function handleSelectedConversations(action, conversationIds) {
+        const category = scanResults?.categories.find(
+            (item) => item.id === selectedCategoryId
+        );
+
+        if (
+            !category ||
+            scanResults?.runId == null ||
+            conversationIds.length === 0
+        ) {
+            throw new Error("Missing selected conversations or scan information.");
+        }
+
+        const actionRequests = {
+            accept: acceptSelectedConversations,
+            keep: keepSelectedConversations,
+            trash: trashSelectedConversations,
+        };
+        const actionRequest = actionRequests[action];
+
+        if (!actionRequest) {
+            throw new Error("Unknown selected-conversation action.");
+        }
+
+        const result = await actionRequest(
+            scanResults.runId,
+            category.label,
+            conversationIds
+        );
+        const selectedIds = new Set(conversationIds);
+        const removesEntireCategory = category.conversations.every(
+            (conversation) => selectedIds.has(conversation.id)
+        );
+
+        setScanResults((currentResults) => {
+            if (!currentResults) {
+                return currentResults;
+            }
+
+            const updatedCategories = currentResults.categories.flatMap(
+                (currentCategory) => {
+                    if (currentCategory.id !== category.id) {
+                        return [currentCategory];
+                    }
+
+                    const remainingConversations =
+                        currentCategory.conversations.filter(
+                            (conversation) =>
+                                !selectedIds.has(conversation.id)
+                        );
+
+                    if (remainingConversations.length === 0) {
+                        return [];
+                    }
+
+                    const remainingEmailCount =
+                        remainingConversations.reduce(
+                            (total, conversation) =>
+                                total + conversation.messageCount,
+                            0
+                        );
+
+                    return [{
+                        ...currentCategory,
+                        conversations: remainingConversations,
+                        conversationCount: remainingConversations.length,
+                        emailCount: remainingEmailCount,
+                        existingLabelId:
+                            result.existingLabelId ??
+                            currentCategory.existingLabelId,
+                    }];
+                }
+            );
+
+            return {
+                ...currentResults,
+                categories: updatedCategories,
+            };
+        });
+
+        if (removesEntireCategory) {
+            setSelectedCategoryId(null);
+            setCurrentView("summary");
+        }
+    }
+
 
     useEffect(() => {
         if (
@@ -220,6 +312,7 @@ function ScanFlow() {
                     category={selectedCategory}
                     conversations={selectedConversations}
                     onBack={handleBackToSummary}
+                    onSelectedAction={handleSelectedConversations}
                 />
             )}
         </>
