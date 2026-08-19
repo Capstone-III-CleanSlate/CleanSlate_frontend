@@ -10,10 +10,17 @@ function ScanCard({
   onScan,
   onShowSummary
 }) {
+  // Speeds up the comet slightly as the frontend scan messages advance.
+  const cometDuration = Math.max(
+    1,
+    1.3 - (scanStageIndex ?? 0) * 0.05
+  );
+
   return (
     <section
       className={`scan-card ${scanStatus === "scanning" ? "scan-card--scanning" : ""
         }`}
+      style={{ "--comet-duration": `${cometDuration}s` }}
     >
       {scanStatus === "idle" && (
         <button

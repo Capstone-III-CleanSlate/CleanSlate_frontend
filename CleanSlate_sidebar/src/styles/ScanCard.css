@@ -74,7 +74,9 @@
     filter:
         drop-shadow(0 0 3px rgb(66 133 244 / 80%)) drop-shadow(0 0 7px rgb(66 133 244 / 40%));
 
-    animation: rotate-glow 1.6s linear infinite;
+    animation:
+        rotate-glow var(--comet-duration, 1.6s)
+        linear infinite;
 }
 
 .scan-card>* {
