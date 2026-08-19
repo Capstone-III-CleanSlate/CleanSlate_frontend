@@ -69,10 +69,21 @@
 
     background-color: var(--color-surface);
     box-shadow: 0 4px 12px rgb(0 0 0 / 18%);
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+.category-card:hover {
+    border-color: var(--category-color);
+    box-shadow: 0 7px 18px rgb(0 0 0 / 28%);
+    transform: translateY(-1px);
 }
 
 .category-card__heading {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: .75rem;
@@ -143,6 +154,11 @@
     font-size: 0.82rem;
     font-weight: 700;
     cursor: pointer;
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        filter 180ms ease;
 }
 
 .accept-btn {
@@ -208,5 +224,16 @@
     .trash-btn {
         padding-inline: 0.35rem;
         font-size: 0.72rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .category-card,
+    .category-card__actions button {
+        transition: none;
+    }
+
+    .category-card:hover {
+        transform: none;
     }
 }
