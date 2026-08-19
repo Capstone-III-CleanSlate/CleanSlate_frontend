@@ -33,6 +33,12 @@
     color: var(--color-success);
 }
 
+.scan-summary__header .scan-summary__conversation-count {
+    margin: -0.15rem 0 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 400;
+}
+
 .scan-summary__header p {
     margin: 0;
     color: var(--color-muted);

@@ -21,12 +21,15 @@ function ScanSummary({
         </span>
 
         <h2 id='scan-summary-title'>
-          <strong>{summary.emailCount}</strong> emails scanned across{' '}
-          {summary.conversationCount}{' '}
+          <strong>{summary.emailCount}</strong> emails scanned
+        </h2>
+
+        <p className='scan-summary__conversation-count'>
+          Across {summary.conversationCount}{' '}
           {summary.conversationCount === 1
             ? 'conversation'
             : 'conversations'}
-        </h2>
+        </p>
 
         <p>
           Sorted into {summary.categories.length} categories.
