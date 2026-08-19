@@ -7,9 +7,11 @@ async function scanInbox() {
         throw new Error("VITE_API_URL is not configured.");
     }
 
+    const { sessionToken } = await chrome.storage.local.get("sessionToken");
+
     const response = await fetch(`${apiUrl}/api/gmail`, {
         method: "GET",
-        credentials: "include",
+        headers: { Authorization: `Bearer ${sessionToken}` },
     });
 
     if (!response.ok) {

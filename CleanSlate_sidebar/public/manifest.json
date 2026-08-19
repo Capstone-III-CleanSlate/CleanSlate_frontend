@@ -3,8 +3,16 @@
   "name": "CleanSlate",
   "version": "1.0.0",
   "description": "AI-powered Gmail cleanup assistant",
+  "action": {},
   "side_panel": {
     "default_path": "index.html"
   },
-  "permissions": [ "sidePanel"]
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [ "sidePanel", "storage" ],
+  "host_permissions": ["http://localhost:3000/*"],
+  "externally_connectable": {
+    "matches": ["http://localhost:3000/*"]
+  }
 }
