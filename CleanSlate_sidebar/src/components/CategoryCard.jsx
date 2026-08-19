@@ -2,10 +2,17 @@ import getCategoryColor from "../utils/getCategoryColor";
 
 function CategoryCard({
     category,
+    isAccepting,
+    isTrashing,
+    actionsDisabled,
     onAccept,
     onReview,
     onTrash,
 }) {
+
+    const isCompleted = category.status === "completed";
+    const decisionButtonsDisabled = actionsDisabled || isCompleted;
+
     return (
         <article
             className={`category-card category-theme category-theme--${category.id}`}
@@ -35,9 +42,14 @@ function CategoryCard({
                 <button
                     type="button"
                     className="accept-btn"
+                    disabled={decisionButtonsDisabled}
                     onClick={() => onAccept(category.id)}
                 >
-                    Accept
+                    {category.decision === "accepted"
+                        ? "Accepted"
+                        : isAccepting
+                            ? "Accepting..."
+                            : "Accept"}
                 </button>
 
                 <button
@@ -51,9 +63,14 @@ function CategoryCard({
                 <button
                     type="button"
                     className="trash-btn"
+                    disabled={decisionButtonsDisabled}
                     onClick={() => onTrash(category.id)}
                 >
-                    Trash all
+                    {category.decision === "trashed"
+                        ? "Trashed"
+                        : isTrashing
+                            ? "Trashing..."
+                            : "Trash all"}
                 </button>
             </div>
         </article>

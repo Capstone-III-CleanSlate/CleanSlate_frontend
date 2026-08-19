@@ -85,6 +85,12 @@ function CategoryDetails({
         console.log("Accept selected conversations:", selectedIds);
         setSelectedConversationIds(new Set());
     }
+    function handleKeepSelected() {
+        const selectedIds = Array.from(selectedConversationIds);
+
+        console.log("Keep selected conversations:", selectedIds);
+        setSelectedConversationIds(new Set());
+    }
 
     function handleTrashSelected() {
         const selectedIds = Array.from(selectedConversationIds);
@@ -121,7 +127,14 @@ function CategoryDetails({
                     >
                         Accept
                     </button>
-
+                    <button
+                        type="button"
+                        className="keep-selected-btn"
+                        disabled={selectedConversationIds.size === 0}
+                        onClick={handleKeepSelected}
+                    >
+                        Keep in inbox
+                    </button>
                     <button
                         type="button"
                         className="trash-selected-btn"
