@@ -145,7 +145,7 @@
     background: var(--color-success);
 }
 
-.accept-btn:hover {
+.accept-btn:hover:not(:disabled) {
     filter: brightness(1.08);
 }
 
@@ -155,7 +155,7 @@
     background: var(--color-primary);
 }
 
-.review-btn:hover {
+.review-btn:hover:not(:disabled) {
     background: var(--color-primary-hover);
 }
 
@@ -177,9 +177,14 @@
     background: transparent;
 }
 
-.trash-btn:hover {
+.trash-btn:hover:not(:disabled) {
     color: #202124;
     background: var(--color-glow-red);
+}
+
+.category-card__actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 .back-btn {
