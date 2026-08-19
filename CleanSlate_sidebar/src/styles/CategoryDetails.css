@@ -33,10 +33,13 @@
 
 .selected-actions {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 0.4rem;
 }
 
 .accept-selected-btn,
+.keep-selected-btn,
 .trash-selected-btn {
     padding: 0.45rem 0.65rem;
     border-radius: 7px;
@@ -56,6 +59,17 @@
     filter: brightness(1.08);
 }
 
+.keep-selected-btn {
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    background: transparent;
+}
+
+.keep-selected-btn:hover:not(:disabled) {
+    color: #202124;
+    background: var(--color-primary);
+}
+
 .trash-selected-btn {
     border: 1px solid var(--color-glow-red);
     color: var(--color-glow-red);
@@ -68,12 +82,14 @@
 }
 
 .accept-selected-btn:disabled,
+.keep-selected-btn:disabled,
 .trash-selected-btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
 .accept-selected-btn:focus-visible,
+.keep-selected-btn:focus-visible,
 .trash-selected-btn:focus-visible {
     outline: 2px solid currentcolor;
     outline-offset: 2px;
@@ -192,6 +208,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 /* Makes the entire collapsed email heading clickable. */
 .email-details__summary {
     position: relative;
