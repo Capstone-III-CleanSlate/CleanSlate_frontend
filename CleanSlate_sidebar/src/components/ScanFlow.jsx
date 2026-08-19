@@ -4,6 +4,8 @@ import ScanCard from "./ScanCard";
 import ScanSummary from "./ScanSummary";
 import scanInbox from "../services/scanInbox";
 import CategoryDetails from "./CategoryDetails";
+import { acceptCategory, trashCategory } from "../services/categoryActions";
+
 
 const scanStages = [
     "Preparing your inbox...",
@@ -11,6 +13,8 @@ const scanStages = [
     "Applying cleanup filters...",
     "Classifying emails...",
     "Building your summary...",
+    "Still working - larger inboxes may take a moment...",
+    "Patience is a virtue..."
 ];
 function ScanFlow() {
     const [scanStatus, setScanStatus] = useState("idle");
@@ -19,6 +23,8 @@ function ScanFlow() {
     const [scanStageIndex, setScanStageIndex] = useState(0);
     const [scanResults, setScanResults] = useState(null);
     const [scanError, setScanError] = useState("");
+    const [pendingCategoryId, setPendingCategoryId] = useState(null);
+    const [pendingCategoryAction, setPendingCategoryAction] = useState(null);
 
     async function handleScan() {
         setCurrentView("scanner");
@@ -56,11 +62,101 @@ function ScanFlow() {
     function handleBackToSummary() {
         setCurrentView("summary");
     }
-    function handleAcceptCategory(categoryId) {
-        console.log("Accept category:", categoryId);
+
+    //finds the matching id in categories with the matching categoryId
+    async function handleAcceptCategory(categoryId) {
+        const category = scanResults?.categories.find(
+            (item) => item.id === categoryId
+        );
+        //sanity check
+        if (!category || scanResults?.runId == null) {
+            console.error("Missing category or scan run ID.");
+            return;
+        }
+        setPendingCategoryId(categoryId);
+        setPendingCategoryAction("accept");
+
+        try {
+            const result = await acceptCategory(
+                scanResults.runId,
+                category.label
+            );
+            setScanResults((currentResults) => {
+                if (!currentResults) {
+                    return currentResults;
+                }
+
+                return {
+                    ...currentResults,
+                    categories: currentResults.categories.map(
+                        (currentCategory) =>
+                            currentCategory.id === categoryId
+                                ? {
+                                    ...currentCategory,
+                                    status: result.status,
+                                    existingLabelId:
+                                        result.existingLabelId,
+                                    decision: "accepted",
+                                }
+                                : currentCategory
+                    ),
+                };
+            });
+            console.log("Category accepted:", result);
+        } catch (error) {
+            console.error("Could not accept category:", error);
+        } finally {
+            setPendingCategoryId(null);
+            setPendingCategoryAction(null);
+        }
     }
-    function handleTrashCategory(categoryId) {
-        console.log("Trash category:", categoryId);
+
+    async function handleTrashCategory(categoryId) {
+        const category = scanResults?.categories.find(
+            (item) => item.id === categoryId
+        );
+
+        if (!category || scanResults?.runId == null) {
+            console.error("Missing category or scan run ID.");
+            return;
+        }
+
+        setPendingCategoryId(categoryId);
+        setPendingCategoryAction("trash");
+
+        try {
+            await trashCategory(
+                scanResults.runId,
+                category.label
+            );
+
+            setScanResults((currentResults) => {
+                if (!currentResults) {
+                    return currentResults;
+                }
+
+                return {
+                    ...currentResults,
+                    categories: currentResults.categories.map(
+                        (currentCategory) =>
+                            currentCategory.id === categoryId
+                                ? {
+                                    ...currentCategory,
+                                    status: "completed",
+                                    decision: "trashed",
+                                }
+                                : currentCategory
+                    ),
+                };
+            });
+
+            console.log("Category moved to trash.");
+        } catch (error) {
+            console.error("Could not trash category:", error);
+        } finally {
+            setPendingCategoryId(null);
+            setPendingCategoryAction(null);
+        }
     }
 
 
@@ -76,7 +172,7 @@ function ScanFlow() {
             setScanStageIndex(
                 (currentIndex) => currentIndex + 1
             );
-        }, 2000);
+        }, 5000);
 
         return () => clearTimeout(scanTimer);
     }, [scanStatus, scanStageIndex]);
@@ -110,6 +206,8 @@ function ScanFlow() {
             {currentView === "summary" && (
                 <ScanSummary
                     summary={scanResults}
+                    pendingCategoryId={pendingCategoryId}
+                    pendingCategoryAction={pendingCategoryAction}
                     onBack={handleBackToScanner}
                     onAcceptCategory={handleAcceptCategory}
                     onReviewCategory={handleReviewCategory}

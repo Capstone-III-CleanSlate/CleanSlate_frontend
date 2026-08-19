@@ -1,8 +1,10 @@
-import "../styles/ScanSummary.css";
-import CategoryCard from "./CategoryCard";
+import '../styles/ScanSummary.css';
+import CategoryCard from './CategoryCard';
 
 function ScanSummary({
   summary,
+  pendingCategoryId,
+  pendingCategoryAction,
   onBack,
   onAcceptCategory,
   onReviewCategory,
@@ -10,20 +12,20 @@ function ScanSummary({
 }) {
   return (
     <section
-      className="scan-summary"
-      aria-labelledby="scan-summary-title"
+      className='scan-summary'
+      aria-labelledby='scan-summary-title'
     >
-      <div className="scan-summary__header">
-        <span className="scan-summary__status">
+      <div className='scan-summary__header'>
+        <span className='scan-summary__status'>
           Scan complete
         </span>
 
-        <h2 id="scan-summary-title">
-          <strong>{summary.emailCount}</strong> emails scanned across{" "}
-          {summary.conversationCount}{" "}
+        <h2 id='scan-summary-title'>
+          <strong>{summary.emailCount}</strong> emails scanned across{' '}
+          {summary.conversationCount}{' '}
           {summary.conversationCount === 1
-            ? "conversation"
-            : "conversations"}
+            ? 'conversation'
+            : 'conversations'}
         </h2>
 
         <p>
@@ -32,17 +34,26 @@ function ScanSummary({
         </p>
 
         {summary.protectedCount > 0 && (
-          <p className="protected-count">
+          <p className='protected-count'>
             {summary.protectedCount} emails from protected senders
             were safely skipped.
           </p>
         )}
       </div>
 
-      <div className="category-list">
+      <div className='category-list'>
         {summary.categories.map((category) => (
           <CategoryCard
             key={category.id}
+            isAccepting={
+              pendingCategoryId === category.id &&
+              pendingCategoryAction === 'accept'
+            }
+            isTrashing={
+              pendingCategoryId === category.id &&
+              pendingCategoryAction === 'trash'
+            }
+            actionsDisabled={pendingCategoryId !== null}
             category={category}
             onAccept={onAcceptCategory}
             onReview={onReviewCategory}
@@ -52,8 +63,8 @@ function ScanSummary({
       </div>
 
       <button
-        type="button"
-        className="back-btn"
+        type='button'
+        className='back-btn'
         onClick={onBack}
       >
         Back
