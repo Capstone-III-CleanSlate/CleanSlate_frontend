@@ -308,6 +308,20 @@
     line-height: 1.5;
 }
 
+.email-confidence {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0.45rem 0 0;
+
+    color: var(--color-muted);
+    font-size: 0.68rem;
+}
+
+.email-confidence strong {
+    color: var(--category-color);
+}
+
 /* Adds a little breathing room below an expanded snippet. */
 .email-details[open] {
     padding-bottom: 0.15rem;
