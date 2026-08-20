@@ -16,7 +16,7 @@ const scanStages = [
     "Still working - larger inboxes may take a moment...",
     "Patience is a virtue..."
 ];
-function ScanFlow() {
+function ScanFlow({ onProtectedSenders }) {
     const [scanStatus, setScanStatus] = useState("idle");
     const [currentView, setCurrentView] = useState("scanner")
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -188,7 +188,10 @@ function ScanFlow() {
         <>
             {currentView === "scanner" && (
                 <>
-                    <HeroIntro scanStatus={scanStatus} />
+                    <HeroIntro
+                        scanStatus={scanStatus}
+                        onProtectedSenders={onProtectedSenders}
+                    />
 
                     <ScanCard
                         scanStatus={scanStatus}

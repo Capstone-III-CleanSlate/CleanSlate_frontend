@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import ScanFlow from "./components/ScanFlow";
 import Navbar from "./components/Navbar"
 import HeroIntro from "./components/HeroIntro";
+import ProtectedSendersPage from "./components/ProtectedSendersPage";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const loginUrl = `${apiUrl}/api/auth/google`;
 
 //opens Google login in a separate tab so the side panel itself stays open
 function handleClick() {
-  chrome.tabs.create({ url: loginUrl });
+  globalThis.chrome.tabs.create({ url: loginUrl });
 }
 
 
@@ -17,11 +18,12 @@ function handleClick() {
 function App() {
   const [user, setUser] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [activePage, setActivePage] = useState("scan");
 
 
   async function handleLogout() {
     try {
-      const { sessionToken } = await chrome.storage.local.get("sessionToken");
+      const { sessionToken } = await globalThis.chrome.storage.local.get("sessionToken");
 
       const response = await fetch(`${apiUrl}/api/auth/logout`, {
         method: "POST",
@@ -32,15 +34,16 @@ function App() {
         throw new Error("Logout failed")
       }
 
-      await chrome.storage.local.remove("sessionToken");
+      await globalThis.chrome.storage.local.remove("sessionToken");
       setUser(null);
+      setActivePage("scan");
     } catch (error) {
       console.error("Could not log out:", error);
     }
   }
   async function checkAuth() {
     try {
-      const { sessionToken } = await chrome.storage.local.get("sessionToken");
+      const { sessionToken } = await globalThis.chrome.storage.local.get("sessionToken");
 
       if (!sessionToken) {
         return;
@@ -55,7 +58,7 @@ function App() {
         setUser(data.user);
       } else if (response.status === 401) {
         // stored token is dead - the backend can't clear it for us, so we do it here
-        await chrome.storage.local.remove("sessionToken");
+        await globalThis.chrome.storage.local.remove("sessionToken");
       }
     } catch (error) {
       console.error("could not check authentication:", error);
@@ -65,7 +68,9 @@ function App() {
   }
 
   useEffect(() => {
-    checkAuth();
+    const initialAuthTimer = window.setTimeout(() => {
+      void checkAuth();
+    }, 0);
 
     function handleVisibilityChange() {
       if (document.visibilityState === "visible") {
@@ -80,11 +85,12 @@ function App() {
     }
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    chrome.runtime.onMessage.addListener(handleMessage);
+    globalThis.chrome.runtime.onMessage.addListener(handleMessage);
 
     return () => {
+      window.clearTimeout(initialAuthTimer);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      chrome.runtime.onMessage.removeListener(handleMessage);
+      globalThis.chrome.runtime.onMessage.removeListener(handleMessage);
     };
   }, []);
 
@@ -114,12 +120,19 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Navbar isAuthenticated={true} />
+      <Navbar
+        isAuthenticated={true}
+        onProtectedSenders={() => setActivePage("protected-senders")}
+      />
 
       <main className="main-content">
-        <ScanFlow />
+        {activePage === "protected-senders" ? (
+          <ProtectedSendersPage onBack={() => setActivePage("scan")} />
+        ) : (
+          <ScanFlow onProtectedSenders={() => setActivePage("protected-senders")} />
+        )}
 
-        <div className="account-actions">
+        {activePage === "scan" && <div className="account-actions">
           <p className="account-status">
             Signed in to {user.email}
           </p>
@@ -131,7 +144,7 @@ function App() {
           >
             Log out
           </button>
-        </div>
+        </div>}
       </main>
     </div>
   );

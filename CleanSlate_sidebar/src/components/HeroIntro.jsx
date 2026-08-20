@@ -28,7 +28,7 @@ const heroMessages = {
   },
 };
 
-function HeroIntro({ scanStatus = "idle" }) {
+function HeroIntro({ scanStatus = "idle", onProtectedSenders }) {
   const currentStatus = heroMessages[scanStatus] ? scanStatus : "idle";
 
   return (
@@ -44,6 +44,11 @@ function HeroIntro({ scanStatus = "idle" }) {
           <p className="eyebrow">{message.eyebrow}</p>
           <h1 className="hero-title">{message.title}</h1>
           <p className="description">{message.description}</p>
+          {status === "idle" && onProtectedSenders && (
+            <button type="button" className="nav-btn" onClick={onProtectedSenders}>
+              Protected Senders
+            </button>
+          )}
         </div>
       ))}
     </header>
