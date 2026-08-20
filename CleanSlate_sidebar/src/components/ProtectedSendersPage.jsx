@@ -79,7 +79,7 @@ function ProtectedSendersPage({ onBack }) {
   return (
     <section className="protected-senders" aria-labelledby="protected-title">
       <button type="button" className="protected-back-btn" onClick={onBack}>
-        Back to scanner
+        &larr; Back to scanner
       </button>
 
       <header className="protected-senders__header">
