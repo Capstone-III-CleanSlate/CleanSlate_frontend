@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ScanFlow from "./components/ScanFlow";
 import Navbar from "./components/Navbar"
 import HeroIntro from "./components/HeroIntro";
+import ProtectedSendersPage from "./components/ProtectedSendersPage";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const loginUrl = `${apiUrl}/api/auth/google`;
@@ -17,6 +18,7 @@ function handleClick() {
 function App() {
   const [user, setUser] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [activePage, setActivePage] = useState("scanner");
 
 
   async function handleLogout() {
@@ -33,6 +35,7 @@ function App() {
       }
 
       await chrome.storage.local.remove("sessionToken");
+      setActivePage("scanner");
       setUser(null);
     } catch (error) {
       console.error("Could not log out:", error);
@@ -116,10 +119,17 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Navbar isAuthenticated={true} />
+      <Navbar
+        isAuthenticated={true}
+        onProtectedSendersClick={() => setActivePage("protected-senders")}
+      />
 
       <main className="main-content">
-        <ScanFlow />
+        {activePage === "protected-senders" ? (
+          <ProtectedSendersPage onBack={() => setActivePage("scanner")} />
+        ) : (
+          <ScanFlow />
+        )}
 
         <div className="account-actions">
           <p className="account-status">
